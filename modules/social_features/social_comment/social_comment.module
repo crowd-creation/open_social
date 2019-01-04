@@ -166,11 +166,12 @@ function social_comment_comment_links_alter(array &$links, CommentInterface $ent
     // If the comment is not published disable the reply link.
     $links['comment']['#links']['comment-reply']['url'] = Url::fromRoute('<nolink>');
   }
-  elseif ($bundle === 'post_comment') {
+
+  if ($bundle === 'post_comment') {
     // For post comments remove the reply button.
     unset($links['comment']['#links']['comment-reply']);
   }
-  elseif ($bundle !== 'post_comment') {
+  else {
     // If it is not a post comment do some extra checks.
     if (!empty($entity->getParentComment()) || \Drupal::routeMatch()->getRouteName() === 'comment.reply') {
       // If this is already on the second level, remove the reply button.
@@ -286,7 +287,7 @@ function social_comment_comment_view(array &$build, EntityInterface $entity, Ent
           ],
         ];
         $commented_entity_url = $commented_entity->toUrl('canonical', $link_options);
-        $build['comment_link'] = Link::fromTextAndUrl(t('Comment'), $commented_entity_url)->toRenderable();
+        $build['comment_link'] = Link::fromTextAndUrl(t('Comment', [], ['context' => 'Comment Button']), $commented_entity_url)->toRenderable();
       }
 
       $comment_count = $commented_entity->{$comment_field_name}->comment_count;
